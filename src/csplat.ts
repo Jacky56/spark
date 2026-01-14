@@ -111,20 +111,20 @@ export function decodeCSplat(
   for (let i = 0; i < numSplats; ++i) {
     const i16 = i * 16;
     const i8 = i * 8;
-    const scaleX = f16[i8 + 3];
-    const scaleY = f16[i8 + 4];
-    const scaleZ = f16[i8 + 5];
-    const x = f16[i8 + 0];
-    const y = f16[i8 + 1];
-    const z = f16[i8 + 2];
-    const r = fileBytes[i16 + 24] / 255;
-    const g = fileBytes[i16 + 25] / 255;
-    const b = fileBytes[i16 + 26] / 255;
-    const opacity = fileBytes[i16 + 27] / 255;
-    const quatW = (fileBytes[i16 + 28] - 128) / 128;
-    const quatX = (fileBytes[i16 + 29] - 128) / 128;
-    const quatY = (fileBytes[i16 + 30] - 128) / 128;
-    const quatZ = (fileBytes[i16 + 31] - 128) / 128;
+    const scaleX = f16[i8 + 0];
+    const scaleY = f16[i8 + 1];
+    const scaleZ = f16[i8 + 2];
+    const x = f16[i8 + 3];
+    const y = f16[i8 + 4];
+    const z = f16[i8 + 5];
+    const r = fileBytes[i16 + 12] / 255;
+    const g = fileBytes[i16 + 13] / 255;
+    const b = fileBytes[i16 + 14] / 255;
+    const opacity = fileBytes[i16 + 15] / 255;
+    const quatW = (fileBytes[i16 + 16] - 128) / 128;
+    const quatX = (fileBytes[i16 + 17] - 128) / 128;
+    const quatY = (fileBytes[i16 + 18] - 128) / 128;
+    const quatZ = (fileBytes[i16 + 19] - 128) / 128;
     splatCallback(
       i,
       x,
