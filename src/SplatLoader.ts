@@ -280,6 +280,9 @@ export function getSplatFileTypeFromPath(
   if (extension === "splat") {
     return SplatFileType.SPLAT;
   }
+  if (extension === "csplat") {
+    return SplatFileType.CSPLAT;
+  }
   if (extension === "ksplat") {
     return SplatFileType.KSPLAT;
   }
