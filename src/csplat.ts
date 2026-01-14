@@ -102,29 +102,31 @@ export function decodeCSplat(
 ) {
   const numSplats = Math.floor(fileBytes.length / 20); // 20 bytes per splat
   if (numSplats * 20 !== fileBytes.length) {
-    throw new Error("Invalid .splat file size");
+    throw new Error("Invalid .csplat file size");
   }
   initNumSplats(numSplats);
 
   const Float16 = typeof Float16Array !== 'undefined' ? Float16Array : CustomFloat16Array;  
-  const f16 = new Float16(fileBytes.buffer);
   for (let i = 0; i < numSplats; ++i) {
-    const i16 = i * 16;
-    const i8 = i * 8;
-    const scaleX = f16[i8 + 0];
-    const scaleY = f16[i8 + 1];
-    const scaleZ = f16[i8 + 2];
-    const x = f16[i8 + 3];
-    const y = f16[i8 + 4];
-    const z = f16[i8 + 5];
-    const r = fileBytes[i16 + 12] / 255;
-    const g = fileBytes[i16 + 13] / 255;
-    const b = fileBytes[i16 + 14] / 255;
-    const opacity = fileBytes[i16 + 15] / 255;
-    const quatW = (fileBytes[i16 + 16] - 128) / 128;
-    const quatX = (fileBytes[i16 + 17] - 128) / 128;
-    const quatY = (fileBytes[i16 + 18] - 128) / 128;
-    const quatZ = (fileBytes[i16 + 19] - 128) / 128;
+    const i20 = i * 20;
+    const scale = new Float16(fileBytes.buffer, i20 + 0, 3);
+    const scaleX = scale[0];
+    const scaleY = scale[1];
+    const scaleZ = scale[2];
+    const position = new Float16(fileBytes.buffer, i20 + 6, 3);
+    const x = position[0];
+    const y = position[1];
+    const z = position[2];
+    const color = new Uint8Array(fileBytes.buffer, i20 + 12, 4);
+    const r = color[0] / 255;
+    const g = color[1] / 255;
+    const b = color[2] / 255;
+    const opacity = color[3] / 255;
+    const quat = new Uint8Array(fileBytes.buffer, i20 + 16, 4);
+    const quatW = (quat[0] - 128) / 128;
+    const quatX = (quat[1] - 128) / 128;
+    const quatY = (quat[2] - 128) / 128;
+    const quatZ = (quat[3] - 128) / 128;
     splatCallback(
       i,
       x,
