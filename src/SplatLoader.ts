@@ -217,6 +217,7 @@ export enum SplatFileType {
   PLY = "ply",
   SPZ = "spz",
   SPLAT = "splat",
+  CSPLAT = "csplat",
   KSPLAT = "ksplat",
   PCSOGS = "pcsogs",
   PCSOGSZIP = "pcsogszip",
@@ -278,6 +279,9 @@ export function getSplatFileTypeFromPath(
   }
   if (extension === "splat") {
     return SplatFileType.SPLAT;
+  }
+  if (extension === "csplat") {
+    return SplatFileType.CSPLAT;
   }
   if (extension === "ksplat") {
     return SplatFileType.KSPLAT;
@@ -519,6 +523,18 @@ export async function unpackSplats({
       return await withWorker(async (worker) => {
         const { packedArray, numSplats } = (await worker.call(
           "decodeAntiSplat",
+          {
+            fileBytes,
+            splatEncoding,
+          },
+        )) as { packedArray: Uint32Array; numSplats: number };
+        return { packedArray, numSplats };
+      });
+    }
+    case SplatFileType.CSPLAT: {
+      return await withWorker(async (worker) => {
+        const { packedArray, numSplats } = (await worker.call(
+          "decodeCSplat",
           {
             fileBytes,
             splatEncoding,
