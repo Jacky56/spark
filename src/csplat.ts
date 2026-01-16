@@ -51,6 +51,39 @@ class CustomFloat16Array {
   }
 }
 
+function uint16ToFloat32(value: number): number {
+  const s = (value & 0x8000) << 16;
+  let e = value & 0x7C00;
+  const f = value & 0x03FF;
+  let out;
+
+  if (e === 0x7C00) {
+    e = 0xFF << 23;
+    out = s | e | (f << 13);
+  } else if (!e) {
+    if (!f) {
+      out = s;
+    } else {
+      e = 0x71 << 23;
+      let m = f << 13;
+      while (!(m & 0x800000)) {
+        m <<= 1;
+        e -= 1 << 23;
+      }
+      m &= ~0x800000;
+      out = s | e | m;
+    }
+  } else {
+    e = ((value >> 10) & 0x1F) - 15 + 127;
+    out = s | (e << 23) | (f << 13);
+  }
+
+  const int32View = new Uint32Array(1);
+  const floatView = new Float32Array(int32View.buffer);
+  int32View[0] = out;
+  return floatView[0];
+}
+
 function float32ToUint16(value: number): number {
   const floatView = new Float32Array(1);
   const int32View = new Uint32Array(floatView.buffer);
